@@ -42,7 +42,7 @@ class User
         if (method_exists($this, $method)) {
             call_user_func_array([$this, $method], $args);
         } else {
-            echo "Метод $method не існує в класі.";
+            echo "Method $method not found.";
         }
     }
 
