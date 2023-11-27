@@ -6,9 +6,9 @@ require_once __DIR__ . '/App/HW_4/User.php';
 
 try {
     $user = new User('Vlad', 25, 'post@gmail.com');
-//    $user->setAge(26);
-//    $user->setEmail('new_email@gmail.com');
-//    $user->setLocation('City');
+    $user->setAge(26);
+    $user->setEmail('new_email@gmail.com');
+    $user->setLocation('City');
     $userData = $user->getAll();
 
     dd($userData);

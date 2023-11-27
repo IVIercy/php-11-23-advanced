@@ -39,8 +39,10 @@ class User
 
     public function __call($method, $args)
     {
-        if (!isset($this->methodAlias[$method])) {
-            throw new CustomException("Method $method not found");
+        if (method_exists($this, $method)) {
+            call_user_func_array([$this, $method], $args);
+        } else {
+            echo "Метод $method не існує в класі.";
         }
     }
 
