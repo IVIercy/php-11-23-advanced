@@ -1,8 +1,6 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-
-class Color
+class ValueObject
 {
 
     /**
@@ -64,7 +62,7 @@ class Color
         }
     }
 
-    public function equals(Color $newColor): bool
+    public function equals(ValueObject $newColor): bool
     {
         return $this->red === $newColor->getRed() &&
             $this->green === $newColor->getGreen() &&
@@ -75,25 +73,37 @@ class Color
     /**
      * @throws Exception
      */
-    public static function randColor(): Color
+    public static function randColor(): ValueObject
     {
         $randRed = rand(0, 255);
         $randGreen = rand(0, 255);
         $randBlue = rand(0, 255);
 
-        return new Color($randRed, $randGreen, $randBlue);
+        return new ValueObject($randRed, $randGreen, $randBlue);
     }
 
     /**
      * @throws Exception
      */
-    public function mix(Color $newColor): Color
+    public function mix(ValueObject $newColor): ValueObject
     {
         $mixedRed = ($this->red + $newColor->getRed()) / 2;
         $mixedGreen = ($this->green + $newColor->getGreen()) / 2;
         $mixedBlue = ($this->blue + $newColor->getBlue()) / 2;
 
-        return new Color($mixedRed, $mixedGreen, $mixedBlue);
+        return new ValueObject($mixedRed, $mixedGreen, $mixedBlue);
     }
 
 }
+
+//$color = new ValueObject(45, 70, 56);
+//
+//$newColor = $color->randColor();
+//
+//$equals = $newColor->equals($newColor) . PHP_EOL;
+//
+//$mixedColor = $color->mix($newColor);
+//
+//echo $mixedColor->getRed() . PHP_EOL;
+//echo $mixedColor->getGreen() . PHP_EOL;
+//echo $mixedColor->getBlue() . PHP_EOL;

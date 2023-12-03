@@ -1,16 +1,35 @@
 <?php
 
-require_once __DIR__ . '/Color.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-$color = new Color(45, 70, 56);
+require_once __DIR__ . '/App/HW_4/User.php';
 
-$newColor = $color->randColor();
+try {
+    $user = new User('Vlad', 25, 'post@gmail.com');
+//    $user->setAge(26);
+//    $user->setEmail('new_email@gmail.com');
+//    $user->setLocation('City');
+    $userData = $user->getAll();
 
-$equals = $newColor->equals($newColor) . PHP_EOL;
+    dd($userData);
+} catch (CustomException $e) {
+    echo "Error " . $e->getMessage();
+} catch (Exception $e) {
+    echo "Another error" . $e->getMessage();
+}
 
-$mixedColor = $color->mix($newColor);
 
-echo $mixedColor->getRed() . PHP_EOL;
-echo $mixedColor->getGreen() . PHP_EOL;
-echo $mixedColor->getBlue() . PHP_EOL;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
