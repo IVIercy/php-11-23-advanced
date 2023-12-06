@@ -2,20 +2,19 @@
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-function clientCode(TypeFactory $factory): void
-{
-    $taxi = $factory->createType();
+use Factory\Taxi;
 
-    echo "Type: " . $taxi->getType() . PHP_EOL;
-    echo "Prise: $" . $taxi->getPrice() . PHP_EOL;
+function clientCode(Taxi $getTaxi): void
+{
+    $getTaxi->getTypeTaxi();
 }
 
 
 echo "Economy Taxi: ";
-clientCode(new EconomyTypeCreate());
+clientCode(new \Factory\EconomyTypeTaxi()) . "\n";
 
 echo "Standard Taxi: ";
-clientCode(new StandardTypeCreate());
+clientCode(new \Factory\StandardTypeTaxi()) . "\n";
 
 echo "Luxury Taxi: ";
-clientCode(new LuxuryTypeCreate());
+clientCode(new \Factory\LuxuryTypeTaxi()) . "\n";

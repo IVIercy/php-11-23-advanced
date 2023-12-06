@@ -4,6 +4,12 @@ namespace Factory;
 
 abstract class Taxi
 {
-    abstract public function getType(): string;
-    abstract public function getPrice(): float;
+    abstract protected function getTaxi(): TypeTaxi;
+
+    public function getTypeTaxi(): void
+    {
+       $taxi = $this->getTaxi();
+       d($taxi->getPrice());
+       d($taxi->getType());
+   }
 }

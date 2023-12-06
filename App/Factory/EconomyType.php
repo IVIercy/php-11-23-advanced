@@ -2,16 +2,15 @@
 
 namespace Factory;
 
-class LuxuryTaxi extends Taxi
+class EconomyType implements TypeTaxi
 {
-
     public function getType(): string
     {
-        return "Luxury";
+        return "Economy ";
     }
 
     public function getPrice(): float
     {
-        return rand(130,200);
+        return rand(45, 55);
     }
 }

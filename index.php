@@ -1,6 +1,7 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+//require_once __DIR__ . '/vendor/autoload.php';
+const BASE_DIR = __DIR__;
 
 require_once __DIR__ . '/App/HW_4/User.php';
 
