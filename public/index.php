@@ -7,7 +7,7 @@ require_once BASE_DIR . '/vendor/autoload.php';
 
 try{
     if (!preg_match('/assets/i', $_SERVER['REQUEST_URI'])){
-        \core\Router::dispatch($_SERVER['REQUEST_URI']);
+        \Core\Router::dispatch($_SERVER['REQUEST_URI']);
     }
 }catch (PDOException $exception) {
     dd("PDOException", $exception);
