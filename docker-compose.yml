@@ -19,19 +19,17 @@
         - .:/var/www/html
       networks:
         - php_advanced
-
     mysql_db:
       image: "mysql:8"
       restart: always
       ports:
-        - "33061:3306"
+        - "13306:3306"
       environment:
         MYSQL_ROOT_PASSWORD: secret
       volumes:
         - "mysql_db_volume:/var/lib/mysql"
       networks:
         - php_advanced
-
     adminer:
       image: adminer
       restart: always
