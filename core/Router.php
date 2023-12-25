@@ -23,8 +23,9 @@ class Router
     /**
      * @throws \Exception
      */
-    static public function dispatch(string $uri): void
+    static public function dispatch(string $uri): string
     {
+        $data = [];
         $uri = static::removeQueryVariables($uri);
         $uri = trim($uri, '/');
 
@@ -34,10 +35,12 @@ class Router
             $action = static::getAction($controller);
 
             if ($controller->before($action, static::$params)) {
-                call_user_func_array([$controller, $action], static::$params);
+                $data = call_user_func_array([$controller, $action], static::$params);
                 $controller->after($action);
             }
         }
+
+        return json_response(200, $data);
     }
 
     static protected function getAction(Controller $controller): string
@@ -68,8 +71,8 @@ class Router
     {
         if (array_key_exists('method', static::$params)) {
             $requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
-            d($requestMethod);
-            if($requestMethod !== strtolower(static::$params['params'])) {
+
+            if($requestMethod !== strtolower(static::$params['method'])) {
                 throw new \Exception("Method '$requestMethod' is not allowed for this route");
             }
 

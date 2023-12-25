@@ -6,16 +6,9 @@ use Core\Controller;
 
 class UsersController extends Controller
 {
-    public function index()
+    public function store(): array
     {
-    }
-
-    public function show()
-    {
-    }
-
-    public function before(string $action, array $params = []): bool
-    {
-        return parent::before($action, $params);
+        $data = requestBody();
+        dd($data);
     }
 }
