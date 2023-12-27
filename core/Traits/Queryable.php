@@ -71,6 +71,8 @@ trait Queryable
             return false;
         }
 
+        $query->closeCursor();
+
         return (int)db()->lastInsertId();
     }
 
@@ -103,31 +105,31 @@ trait Queryable
         return db()->query(static::$query)->fetchAll(PDO::FETCH_CLASS, static::class);
     }
 
-    static public function update(array $data): false|int
-    {
-        $params = static::prepareQueryParams($data);
-        $query = db()->prepare("UPDATE " . static::$tableName . " ($params[keys]) VALUES ($params[placeholders])" . " SET ");
-
-        if (!$query->execute($data)) {
-            return false;
-        }
-        static::$query .= $query;
-
-        return db()->prepare(static::$query)->execute($data);
-    }
-
-    public function where(string $column, $value): static
-    {
-        if (empty($this->commands) || !in_array('select', $this->commands)) {
-            throw new \RuntimeException();
-        }
-
-        $this->commands[] = 'where';
-
-        $query = db()->query(static::$query .= "WHERE $column = :$column ");
-
-        $query->bindParam($column, $value);
-
-        return $this;
-    }
+//    static public function update(array $data): false|int
+//    {
+//        $params = static::prepareQueryParams($data);
+//        $query = db()->prepare("UPDATE " . static::$tableName . " ($params[keys]) VALUES ($params[placeholders])" . " SET ");
+//
+//        if (!$query->execute($data)) {
+//            return false;
+//        }
+//        static::$query .= $query;
+//
+//        return db()->prepare(static::$query)->execute($data);
+//    }
+//
+//    public function where(string $column, $value): static
+//    {
+//        if (empty($this->commands) || !in_array('select', $this->commands)) {
+//            throw new \RuntimeException();
+//        }
+//
+//        $this->commands[] = 'where';
+//
+//        $query = db()->query(static::$query .= "WHERE $column = :$column ");
+//
+//        $query->bindParam($column, $value);
+//
+//        return $this;
+//    }
 }
