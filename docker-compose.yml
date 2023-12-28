@@ -1,7 +1,7 @@
   version: "3.8"
 
   volumes:
-    mysql_db_volume:
+    db_volume:
       driver: local
 
   networks:
@@ -19,19 +19,17 @@
         - .:/var/www/html
       networks:
         - php_advanced
-
     mysql_db:
       image: "mysql:8"
       restart: always
       ports:
-        - "33061:3306"
+        - "33062:3306"
       environment:
         MYSQL_ROOT_PASSWORD: secret
       volumes:
-        - "mysql_db_volume:/var/lib/mysql"
+        - "db_volume:/var/lib/mysql"
       networks:
         - php_advanced
-
     adminer:
       image: adminer
       restart: always
