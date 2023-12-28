@@ -60,20 +60,20 @@ trait Queryable
      * 'name' => '...',
      * 'content' => '...'
      * ]
-     * @return false|int
+     * @return false|static
      */
-    static public function create(array $fields): false|int
+    static public function create(array $fields): null|static
     {
         $params = static::prepareQueryParams($fields);
         $query = db()->prepare("INSERT INTO " . static::$tableName . " ($params[keys]) VALUES ($params[placeholders])");
 
         if (!$query->execute($fields)) {
-            return false;
+            return null;
         }
 
         $query->closeCursor();
 
-        return (int)db()->lastInsertId();
+        return static::find(db()->lastInsertId());
     }
 
     static public function destroy(int $id): bool
@@ -95,9 +95,86 @@ trait Queryable
         ];
     }
 
+    static public function __callStatic(string $name, array $args): mixed
+    {
+        if (in_array($name, ['where'])) {
+            $obj = static::select();
+            return call_user_func_array([$obj, $name], $args);
+        }
+    }
+
+    public function __call(string $name, array $args): mixed
+    {
+        if (in_array($name, ['where'])) {
+            return call_user_func_array([$this, $name], $args);
+        }
+    }
+
     static protected function resetQuery(): void
     {
         static::$query = '';
+    }
+
+    protected function where(string $column, string $operator, $value = null): static
+    {
+        if ($this->prevent(['group', 'limit', 'order', 'having'])){
+            throw new \Exception(
+                static::class .
+                ": WHERE can not be after ['group', 'limit', 'order', 'having']"
+            );
+        }
+
+        $obj = in_array('select', $this->commands) ? $this : static::select();
+
+        if (!is_null($value) &&
+            !is_bool($value) &&
+            !is_numeric($value) &&
+            !is_array($value) &&
+            !in_array($operator, ['IN', 'NOT IN'])
+        ) {
+            $value = "'$value'";
+        }
+
+        if (is_null($value)) {
+            $value = 'NULL';
+        }
+
+        if (is_array($value)) {
+            $value = array_map(fn($item) => is_string($item) ? "'$item'" : $item, $value);
+            $value = '('. implode(', ', $value) .')';
+        }
+
+        if (!in_array('where', $obj->commands)) {
+            static::$query .= "WHERE";
+        }
+
+        static::$query .= " $column $operator $value";
+        $this->commands[] = 'where';
+
+        return $obj;
+    }
+
+    public function andWhere(string $column, string $operator, $value = null): static
+    {
+        static::$query .= " AND ";
+        return $this->where($column, $operator, $value);
+    }
+
+    public function sql(): string
+    {
+        return static::$query;
+    }
+
+    public function exists(): bool
+    {
+        if ($this->prevent(['select'])) {
+            throw new \Exception(
+                static::class .
+                ": exists can not be called before ['select']"
+            );
+        }
+
+        return !empty($this->get());
     }
 
     public function get(): array
@@ -105,31 +182,14 @@ trait Queryable
         return db()->query(static::$query)->fetchAll(PDO::FETCH_CLASS, static::class);
     }
 
-//    static public function update(array $data): false|int
-//    {
-//        $params = static::prepareQueryParams($data);
-//        $query = db()->prepare("UPDATE " . static::$tableName . " ($params[keys]) VALUES ($params[placeholders])" . " SET ");
-//
-//        if (!$query->execute($data)) {
-//            return false;
-//        }
-//        static::$query .= $query;
-//
-//        return db()->prepare(static::$query)->execute($data);
-//    }
-//
-//    public function where(string $column, $value): static
-//    {
-//        if (empty($this->commands) || !in_array('select', $this->commands)) {
-//            throw new \RuntimeException();
-//        }
-//
-//        $this->commands[] = 'where';
-//
-//        $query = db()->query(static::$query .= "WHERE $column = :$column ");
-//
-//        $query->bindParam($column, $value);
-//
-//        return $this;
-//    }
+    protected function prevent(array $allowedMethods): bool
+    {
+        foreach ($allowedMethods as $method) {
+            if (in_array($method, $this->commands)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }
