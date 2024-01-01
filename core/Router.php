@@ -63,6 +63,7 @@ class Router
     static protected function getController(): Controller
     {
         $controller = static::$params['controller'] ?? null;
+
         if (!class_exists($controller)){
             throw new \Exception("Controller '$controller' doesn't exist!");
         }

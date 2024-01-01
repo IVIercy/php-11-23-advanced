@@ -10,7 +10,7 @@ trait Queryable
 
     static protected string $query = '';
 
-    protected array $commands = [];
+    private array $commands = [];
 
     /**
      * @param array $columns (e.g. ['name', 'surname'], ['users.name as u_name'])
@@ -60,7 +60,7 @@ trait Queryable
      * 'name' => '...',
      * 'content' => '...'
      * ]
-     * @return false|static
+     * @return null|static
      */
     static public function create(array $fields): null|static
     {
