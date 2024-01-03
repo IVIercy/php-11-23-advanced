@@ -12,7 +12,7 @@ try{
    $dotenv = \Dotenv\Dotenv::createUnsafeImmutable(BASE_DIR);
    $dotenv->load();
 
-    dd(Folder::select()->where('title', 'IN', ['test', 5, 126])->sql());
+//    dd(Folder::select()->where('title', 'IN', ['test', 5, 126])->sql());
 
    die(\Core\Router::dispatch($_SERVER['REQUEST_URI']));
 }catch (PDOException $exception) {
