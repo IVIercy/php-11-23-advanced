@@ -15,7 +15,9 @@ class NotesController extends BaseApiController
         return $this->response(
             body: Note::where('user_id', '=', authId())
                 ->orderBy([
-                    'updated_at' => SqlOrder::DESC
+                    'pinned' => SqlOrder::DESC,
+                    'completed' => SqlOrder::ASC,
+                    'updated_at' => SqlOrder::DESC,
                 ])
                 ->get()
         );
@@ -64,11 +66,11 @@ class NotesController extends BaseApiController
             'updated_at' => date('Y-m-d H:i:s')
         ];
 
-        $validator = new UpdateNoteValidator();
-        dd($validator->validate($data));
-//        if ($validator->validate($data) && $folder = $folder->update($data)) {
-//            return $this->response(body: $folder->toArray());
-//        }
+        $validator = new UpdateNoteValidator($note);
+
+        if ($validator->validate($data) && $note = $note->update($data)) {
+            return $this->response(body: $note->toArray());
+        }
 
         return $this->response(errors: $validator->getErrors());
     }
